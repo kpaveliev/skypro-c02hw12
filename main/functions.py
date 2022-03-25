@@ -22,7 +22,7 @@ def search_posts(searched_word, posts):
         for word in words:
             for char in chars_to_remove:
                 word = word.replace(char, '')
-            words_cleaned.append(word)
+            words_cleaned.append(word.lower())
 
         # Search word in words_cleaned
         if searched_word.lower() in words_cleaned:

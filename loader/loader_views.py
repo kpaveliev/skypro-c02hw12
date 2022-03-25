@@ -22,35 +22,27 @@ def post_page():
     # Show added post
     elif request.method == 'POST':
         # Get data from submitted form
-        picture = request.files.get('picture')
-        content = request.form.get('content')
+        try:
+            picture = request.files.get('picture')
 
-        # Check if picture is submitted
-        if not picture:
-            message = 'Не приложен файл с изображением'
+            pic_name = picture.filename
+            is_filename_allowed(pic_name)
+            pic_link = f'{UPLOAD_FOLDER}/{pic_name}'
+            picture.save(pic_link)
+
+            content = request.form.get('content')
+        # Check picture
+        except (TypeError, IsADirectoryError):
+            message = f'Не приложен файл. ' \
+                      f'Или загружаемый файл {pic_name} не являетcя изображением. \n' \
+                      f'Допустимые разрешения: {", ".join(ALLOWED_EXTENSIONS)}'
+
             logging.error(message)
             return render_template('post_error.html', error_message=message)
 
         else:
-            pic_name = picture.filename
-
-            # Check if picture is an image
-            if not is_filename_allowed(pic_name):
-                message = f'Загружаемый файл {pic_name} не являетя изображением, ' \
-                          f'допустимые разрешения: png, jpeg, jpg, gif'
-                logging.info(message)
-                return render_template('post_error.html', error_message=message)
-
-            # If everything is okay
-            else:
-                pic_link = f'{UPLOAD_FOLDER}/{pic_name}'
-                picture.save(pic_link)
-
-                # Add new post to json file
-                post_to_add = {'pic': pic_link, 'content': content}
-                add_to_json(POST_PATH, post_to_add)
-
-                # Display added post
-                return render_template('post_uploaded.html',
-                                       pic_link=pic_link,
-                                       content=content)
+            # Add new post to json file
+            post_to_add = {'pic': pic_link, 'content': content}
+            add_to_json(POST_PATH, post_to_add)
+            # Display new post
+            return render_template('post_uploaded.html', pic_link=pic_link, content=content)

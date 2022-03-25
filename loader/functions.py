@@ -16,27 +16,18 @@ def add_to_json(filename: str, post_to_add: dict):
     with open(filename, mode='w', encoding='utf-8') as file:
         json.dump(posts, file, indent=4, ensure_ascii=False)
 
-def is_filename_allowed(file: str, allowed_extensions: set)-> TypeError:
-    """Raise an error if the file has an extension which isn't allowed
+def is_filename_allowed(file: str, allowed_extensions: set)-> bool:
+    """Check if the file has an extension which is allowed
 
     Arguments:
     filename -- file to check
     allowed_extenstions -- set with allowed extensions
     """
     file_extension = file.split(".")[-1]
-    if file_extension not in allowed_extensions:
-        raise TypeError
-
-def is_file_allowed(file: str, allowed_extensions: set)-> TypeError:
-    """Raise an error if the file has an extension which isn't allowed
-
-    Arguments:
-    filename -- file to check
-    allowed_extenstions -- set with allowed extensions
-    """
-    file_extension = file.split(".")[-1]
-    if file_extension not in allowed_extensions:
-        raise TypeError
+    if file_extension in allowed_extensions:
+        return True
+    else:
+        return False
 
 if __name__ == '__main__':
     # test 1

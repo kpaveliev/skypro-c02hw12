@@ -20,27 +20,39 @@ def post_page():
 
     # Show added post
     elif request.method == 'POST':
-        # Get data from submitted form
         try:
+            # Get data from the submitted form
             picture = request.files.get('picture')
             content = request.form.get('content')
-
             pic_name = picture.filename
-            is_filename_allowed(pic_name, current_app.config['ALLOWED_EXTENSIONS'])
-            pic_link = f'{current_app.config["UPLOAD_FOLDER"]}/{pic_name}'
-            picture.save(pic_link)
 
-        # Show error if file isn't submitted or it's not an image
-        except (TypeError, IsADirectoryError):
-            message = f'Не приложен файл. ' \
-                      f'Или загружаемый файл {pic_name} не являетcя изображением. \n' \
+            # Check for errors
+            if not picture:
+                raise Exception
+            if not is_filename_allowed(pic_name, current_app.config['ALLOWED_EXTENSIONS']):
+                raise TypeError
+
+        # Show errors
+        except TypeError:
+            message = f'Загружаемый файл {pic_name} не являетcя изображением. \n' \
                       f'Допустимые разрешения: {", ".join(current_app.config["ALLOWED_EXTENSIONS"])}'
             logging.error(message)
             return render_template('post_error.html', error_message=message)
 
-        # Add the post submitted to the json file and display the post
+        except Exception:
+            message = f'Файл не загружен'
+            logging.error(message)
+            return render_template('post_error.html', error_message=message)
+
+        # Work with the results if everything is okay
         else:
+            # Save picture
+            pic_link = f'{current_app.config["UPLOAD_FOLDER"]}/{pic_name}'
+            picture.save(pic_link)
+
+            # Add new post to the json file
             post_to_add = {'pic': pic_link, 'content': content}
             add_to_json(current_app.config['POST_PATH'], post_to_add)
 
+            # Display page with the new post
             return render_template('post_uploaded.html', pic_link=pic_link, content=content)

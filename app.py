@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, send_from_directory
 from main.main import main_blueprint
 from loader.loader import loader_blueprint
 
@@ -15,5 +15,5 @@ app.register_blueprint(loader_blueprint)
 def static_dir(path):
     return send_from_directory("resources/uploads", path)
 
-
-app.run()
+if __name__ == '__main__':
+    app.run()

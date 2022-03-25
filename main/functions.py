@@ -1,16 +1,23 @@
 import json
 from settings import POST_PATH
 
-def load_from_json(filename):
-    """Create list of posts from a json file"""
+def load_from_json(filename: str)-> list:
+    """Create a list of posts from a json file
+
+    Arguments:
+    filename -- path to a posts file
+    """
     with open(filename, mode='r', encoding='utf-8') as file:
         posts = json.load(file)
     return posts
 
+def search_posts(searched_word: str, posts: list)-> list:
+    """Search a word in posts and return all posts with it
 
-def search_posts(searched_word, posts):
-    """Search a word in posts"""
-
+    Arguments:
+    searched_word -- a word to search for
+    posts -- list of posts to search in
+    """
     chars_to_remove = '#/,.!0-'
     posts_found = []
 
@@ -18,13 +25,13 @@ def search_posts(searched_word, posts):
         words = post['content'].split(' ')
         words_cleaned = []
 
-        # Prepare list of words without chars_to_remove
+        # Prepare a list of words without chars_to_remove
         for word in words:
             for char in chars_to_remove:
                 word = word.replace(char, '')
             words_cleaned.append(word.lower())
 
-        # Search word in words_cleaned
+        # Search the word in words_cleaned list
         if searched_word.lower() in words_cleaned:
             posts_found.append(post)
 

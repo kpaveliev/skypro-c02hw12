@@ -5,10 +5,9 @@ import logging
 from json import JSONDecodeError
 
 
-# Create Blueprint object and configure logging
+# Create a Blueprint object and configure logging
 main_blueprint = Blueprint('main_blueprint', __name__, template_folder='templates')
 logging.basicConfig(filename="basic.log", level=logging.INFO)
-
 
 # Add views
 @main_blueprint.route('/')
@@ -20,10 +19,11 @@ def main_page():
 @main_blueprint.route('/search')
 def main_search():
     """Display all posts with a specified word within"""
-
+    # Load posts from a json file
     try:
         posts = load_from_json(POST_PATH)
 
+    # Check for errors
     except FileNotFoundError:
         message = 'Что-то пошло не так! Не обнаружен файл с постами.'
         logging.error(message)
@@ -36,6 +36,7 @@ def main_search():
 
         return render_template('main_error.html', error_message=message)
 
+    # Show results
     else:
         searched_word = request.args.get('s')
         found_posts = search_posts(searched_word, posts)

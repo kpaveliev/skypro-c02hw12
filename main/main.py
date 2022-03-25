@@ -1,13 +1,14 @@
-from flask import request, render_template, Blueprint
+from flask import request, render_template, Blueprint, current_app
 from main.functions import load_from_json, search_posts
-from settings import POST_PATH
 import logging
 from json import JSONDecodeError
 
 
 # Create a Blueprint object and configure logging
-main_blueprint = Blueprint('main_blueprint', __name__, template_folder='templates')
-logging.basicConfig(filename="basic.log", level=logging.INFO)
+main_blueprint = Blueprint('main_blueprint', __name__,
+                           static_folder='static',
+                           template_folder='templates')
+logging.basicConfig(filename='resources/logs/basic.log', level=logging.INFO)
 
 # Add views
 @main_blueprint.route('/')
@@ -21,7 +22,7 @@ def main_search():
     """Display all posts with a specified word within"""
     # Load posts from a json file
     try:
-        posts = load_from_json(POST_PATH)
+        posts = load_from_json(current_app.config['POST_PATH'])
 
     # Check for errors
     except FileNotFoundError:

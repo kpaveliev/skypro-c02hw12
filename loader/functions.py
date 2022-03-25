@@ -1,5 +1,4 @@
 import json
-from settings import ALLOWED_EXTENSIONS
 
 def add_to_json(filename: str, post_to_add: dict):
     """Append a post to a json file
@@ -18,6 +17,17 @@ def add_to_json(filename: str, post_to_add: dict):
         json.dump(posts, file, indent=4, ensure_ascii=False)
 
 def is_filename_allowed(file: str, allowed_extensions: set)-> TypeError:
+    """Raise an error if the file has an extension which isn't allowed
+
+    Arguments:
+    filename -- file to check
+    allowed_extenstions -- set with allowed extensions
+    """
+    file_extension = file.split(".")[-1]
+    if file_extension not in allowed_extensions:
+        raise TypeError
+
+def is_file_allowed(file: str, allowed_extensions: set)-> TypeError:
     """Raise an error if the file has an extension which isn't allowed
 
     Arguments:

@@ -1,5 +1,4 @@
 import json
-from settings import POST_PATH
 
 def load_from_json(filename: str)-> list:
     """Create a list of posts from a json file

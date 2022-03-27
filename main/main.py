@@ -1,8 +1,7 @@
 from flask import request, render_template, Blueprint, current_app
-from main.functions import load_from_json, search_posts
+from main.functions import load_from_json
 import logging
 from json import JSONDecodeError
-
 
 # Create a Blueprint object and configure logging
 main_blueprint = Blueprint('main_blueprint', __name__,
@@ -40,7 +39,7 @@ def main_search():
     # Show results
     else:
         searched_word = request.args.get('s')
-        found_posts = search_posts(searched_word, posts)
+        found_posts = [post for post in posts if searched_word.lower() in post['content'].lower()]
         logging.info(f'Запрошен поиск по слову: {searched_word}')
 
         return render_template('main_list.html',
